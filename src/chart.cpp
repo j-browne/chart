@@ -5,17 +5,30 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
-#include "color.h"
-#include "nucleus.h"
 
 using namespace std;
+
+class color {
+public:
+	int c[3];
+};
+
+class nucleus {
+public:
+	string name;
+	int z;
+	int n;
+	string color;
+};
 
 //int main(int argc, char *argv[]) {
 int main() {
 	map<string,color> colors;
 	vector<nucleus> nuclei;
+	vector<int> magic;
 	map<int,string> elements;
-	map<int,int> lightest;
+	map<int,pair<int,int>> zLimits;
+	map<int,pair<int,int>> nLimits;
 	int maxZ=0;
 	int maxN=0;
 	const int scale = 10;
@@ -69,11 +82,29 @@ int main() {
 
 		ss >> z >> n;
 
-		elements.insert(pair< int,string>(z,n));
+		elements.insert(pair<int,string>(z,n));
 	}
 	elemfile.close();
 
-	// Determine the limits of the chart
+	/*
+	 * Load in the magic numbers
+	 * The file is formatted as:
+	 * n
+	 */
+	ifstream magfile("magic");
+	while(getline(magfile, str), magfile.good()) {
+		stringstream ss(str);
+		int n;
+
+		ss >> n;
+
+		magic.push_back(n);
+	}
+	magfile.close();
+
+	/*
+	 * Determine the limits of the chart
+	 */
 	for (vector<nucleus>::iterator it=nuclei.begin(); it!=nuclei.end(); ++it) {
 		if (it->n > maxN) {
 			maxN=it->n;
@@ -83,12 +114,24 @@ int main() {
 		}
 	}
 
-	// Determine the lightest isotope of each element
+	/*
+	 * Determine the lowest and highest Z for each N
+	 * and lowest and highest N for each Z
+	 */
 	for (vector<nucleus>::iterator it=nuclei.begin(); it!=nuclei.end(); ++it) {
-		if (lightest.count(it->z)==0) {
-			lightest.insert(pair<int,int>(it->z,it->n));
-		} else if (it->n < lightest[it->z]) {
-			lightest.insert(pair<int,int>(it->z,it->n));
+		if (zLimits.count(it->z)==0) {
+			zLimits.insert(pair<int,pair<int,int>>(it->z,pair<int,int>(it->n,it->n)));
+		} else if (it->n < zLimits[it->z].first) {
+			zLimits[it->z].first = it->n;
+		} else if (it->n > zLimits[it->z].second) {
+			zLimits[it->z].second = it->n;
+		}
+		if (nLimits.count(it->n)==0) {
+			nLimits.insert(pair<int,pair<int,int>>(it->n,pair<int,int>(it->z,it->z)));
+		} else if (it->z < nLimits[it->n].first) {
+			nLimits[it->n].first = it->z;
+		} else if (it->z > nLimits[it->n].second) {
+			nLimits[it->n].second = it->z;
 		}
 	}
 
@@ -128,9 +171,9 @@ int main() {
 	// Element Symbols
 	for (map<int,string>::iterator it=elements.begin(); it!=elements.end(); ++it) {
 		// Determine x position
-		int x=lightest[it->first];
-		if (lightest.count((it->first)+1) && lightest[(it->first)+1] < x) {
-			x=lightest[(it->first)+1];
+		int x=zLimits[it->first].first;
+		if (zLimits.count((it->first)+1) && zLimits[(it->first)+1].first < x) {
+			x=zLimits[(it->first)+1].first;
 		}
 		svgfile << "<text"
 		        << " x=\"" << x-.25 << "\""
@@ -140,6 +183,30 @@ int main() {
 		        << ">"
 		        << it->second
 		        << "</text>" << endl;
+	}
+
+	// Magic Number Outlines
+	for (vector<int>::iterator it=magic.begin(); it!=magic.end(); ++it) {
+		svgfile << "<rect"
+		        << " x=\"" << *it << "\""
+		        << " y=\"" << maxZ-nLimits[*it].second << "\""
+		        << " width=\"1\""
+		        << " height=\"" << nLimits[*it].second-nLimits[*it].first+1 << "\""
+		        << " style=\""
+		        << "fill:none;"
+		        << "stroke:black;"
+		        << "stroke-width:.25"
+		        << "\"/>" << endl;
+		svgfile << "<rect"
+		        << " x=\"" << zLimits[*it].first << "\""
+		        << " y=\"" << maxZ-*it << "\""
+		        << " width=\"" << zLimits[*it].second-zLimits[*it].first+1 << "\""
+		        << " height=\"1\""
+		        << " style=\""
+		        << "fill:none;"
+		        << "stroke:black;"
+		        << "stroke-width:.25"
+		        << "\"/>" << endl;
 	}
 
 	svgfile << "</g>" << endl;
