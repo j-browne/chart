@@ -190,26 +190,32 @@ int main() {
 
 	// Magic Number Outlines
 	for (vector<int>::iterator it=magic.begin(); it!=magic.end(); ++it) {
-		svgfile << "<rect"
-		        << " x=\"" << *it << "\""
-		        << " y=\"" << maxZ-nLimits[*it].second << "\""
-		        << " width=\"1\""
-		        << " height=\"" << nLimits[*it].second-nLimits[*it].first+1 << "\""
-		        << " style=\""
-		        << "fill:none;"
-		        << "stroke:black;"
-		        << "stroke-width:.25"
-		        << "\"/>" << endl;
-		svgfile << "<rect"
-		        << " x=\"" << zLimits[*it].first << "\""
-		        << " y=\"" << maxZ-*it << "\""
-		        << " width=\"" << zLimits[*it].second-zLimits[*it].first+1 << "\""
-		        << " height=\"1\""
-		        << " style=\""
-		        << "fill:none;"
-		        << "stroke:black;"
-		        << "stroke-width:.25"
-		        << "\"/>" << endl;
+		// Only include magic number outline if one of those isotones is include
+		if (nLimits.count(*it)) {
+			svgfile << "<rect"
+			        << " x=\"" << *it << "\""
+			        << " y=\"" << maxZ-nLimits[*it].second << "\""
+			        << " width=\"1\""
+			        << " height=\"" << nLimits[*it].second-nLimits[*it].first+1 << "\""
+			        << " style=\""
+			        << "fill:none;"
+			        << "stroke:black;"
+			        << "stroke-width:.25"
+			        << "\"/>" << endl;
+		}
+		// Only include magic number outline if one of those isotopes is include
+		if (zLimits.count(*it)) {
+			svgfile << "<rect"
+			        << " x=\"" << zLimits[*it].first << "\""
+			        << " y=\"" << maxZ-*it << "\""
+			        << " width=\"" << zLimits[*it].second-zLimits[*it].first+1 << "\""
+			        << " height=\"1\""
+			        << " style=\""
+			        << "fill:none;"
+			        << "stroke:black;"
+			        << "stroke-width:.25"
+			        << "\"/>" << endl;
+		}
 	}
 
 	svgfile << "</g>" << endl;
