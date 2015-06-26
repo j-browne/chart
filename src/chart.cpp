@@ -38,7 +38,7 @@ int main() {
 	 * The file is formatted as:
 	 * name	r	g	b
 	 */
-	ifstream colfile("colors");
+	ifstream colfile("data/colors");
 	string str;
 	while(getline(colfile, str), colfile.good()) {
 		stringstream ss(str);
@@ -58,7 +58,7 @@ int main() {
 	 *
 	 * The color is associated with a color name from the color file
 	 */
-	ifstream nucfile("nuclei");
+	ifstream nucfile("data/nuclei");
 	while(getline(nucfile, str), nucfile.good()) {
 		stringstream ss(str);
 		nucleus n;
@@ -74,7 +74,7 @@ int main() {
 	 * The file is formatted as:
 	 * z	name
 	 */
-	ifstream elemfile("elements");
+	ifstream elemfile("data/elements");
 	while(getline(elemfile, str), elemfile.good()) {
 		stringstream ss(str);
 		 int z;
@@ -91,7 +91,7 @@ int main() {
 	 * The file is formatted as:
 	 * n
 	 */
-	ifstream magfile("magic");
+	ifstream magfile("data/magic");
 	while(getline(magfile, str), magfile.good()) {
 		stringstream ss(str);
 		int n;
