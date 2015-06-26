@@ -171,18 +171,21 @@ int main() {
 	// Element Symbols
 	for (map<int,string>::iterator it=elements.begin(); it!=elements.end(); ++it) {
 		// Determine x position
-		int x=zLimits[it->first].first;
-		if (zLimits.count((it->first)+1) && zLimits[(it->first)+1].first < x) {
-			x=zLimits[(it->first)+1].first;
+		// Only include element symbol if one of its isotopes is included
+		if (zLimits.count(it->first)) {
+			int x=zLimits[it->first].first;
+			if (zLimits.count((it->first)+1) && zLimits[(it->first)+1].first < x) {
+				x=zLimits[(it->first)+1].first;
+			}
+			svgfile << "<text"
+			        << " x=\"" << x-.25 << "\""
+			        << " y=\"" << maxZ-(it->first)+.75 << "\""
+			        << " text-anchor=\"end\""
+			        << " font-size=\".9\""
+			        << ">"
+			        << it->second
+			        << "</text>" << endl;
 		}
-		svgfile << "<text"
-		        << " x=\"" << x-.25 << "\""
-		        << " y=\"" << maxZ-(it->first)+.75 << "\""
-		        << " text-anchor=\"end\""
-		        << " font-size=\".9\""
-		        << ">"
-		        << it->second
-		        << "</text>" << endl;
 	}
 
 	// Magic Number Outlines
