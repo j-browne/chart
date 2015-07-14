@@ -150,6 +150,7 @@ int main() {
 	svgfile << "<style>" << endl;
 	svgfile << ".nucBox{stroke:black;stroke-width:.1;}" << endl;
 	svgfile << ".elName{text-anchor:end;}" << endl;
+	svgfile << ".magBox{fill:none;stroke:black;stroke-width:.25;}" << endl;
 	for (map<string,color>::iterator it=colors.begin(); it!=colors.end(); ++it) {
 		svgfile << "." << it->first << " {"
 		        << "fill:rgb(" << it->second.c[0] << ","
@@ -162,8 +163,8 @@ int main() {
 	// Create Transform Group
 	svgfile << "<g transform=\""
 	        << "scale(" << scale << ")"
-	        << " translate(2,1)"
-	        << "\">" << endl;
+	        << " translate(2,1)\""
+	        << ">" << endl;
 
 	// Nuclide Boxes
 	for (vector<nucleus>::iterator it=nuclei.begin(); it!=nuclei.end(); ++it) {
@@ -173,7 +174,7 @@ int main() {
 		        << " width=\"1\""
 		        << " height=\"1\""
 		        << " class=\"" << "nucBox" << " " <<  it->color << "\""
-		        << "/>" << endl;
+		        << " />" << endl;
 	}
 
 	// Element Symbols
@@ -205,11 +206,8 @@ int main() {
 			        << " y=\"" << maxZ-nLimits[*it].second << "\""
 			        << " width=\"1\""
 			        << " height=\"" << nLimits[*it].second-nLimits[*it].first+1 << "\""
-			        << " style=\""
-			        << "fill:none;"
-			        << "stroke:black;"
-			        << "stroke-width:.25"
-			        << "\"/>" << endl;
+			        << " class=\"" << "magBox" << "\""
+			        << " />" << endl;
 		}
 		// Only include magic number outline if one of those isotopes is include
 		if (zLimits.count(*it)) {
@@ -218,11 +216,8 @@ int main() {
 			        << " y=\"" << maxZ-*it << "\""
 			        << " width=\"" << zLimits[*it].second-zLimits[*it].first+1 << "\""
 			        << " height=\"1\""
-			        << " style=\""
-			        << "fill:none;"
-			        << "stroke:black;"
-			        << "stroke-width:.25"
-			        << "\"/>" << endl;
+			        << " class=\"" << "magBox" << "\""
+			        << " />" << endl;
 		}
 	}
 
