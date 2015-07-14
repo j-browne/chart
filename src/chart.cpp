@@ -146,6 +146,18 @@ int main() {
 	        << " height=\"" << (maxZ+3)*scale << "\""
 	        << ">" << endl;
 
+	// Styling
+	svgfile << "<style>" << endl;
+	svgfile << ".nucBox{stroke:black;stroke-width:.1;}" << endl;
+	for (map<string,color>::iterator it=colors.begin(); it!=colors.end(); ++it) {
+		svgfile << "." << it->first << " {"
+		        << "fill:rgb(" << it->second.c[0] << ","
+		                       << it->second.c[1] << ","
+		                       << it->second.c[2] << ");"
+		        << "}" << endl;
+	}
+	svgfile << "</style>" << endl;
+
 	// Create Transform Group
 	svgfile << "<g transform=\""
 	        << "scale(" << scale << ")"
@@ -159,13 +171,8 @@ int main() {
 		        << " y=\"" << maxZ-(it->z) << "\""
 		        << " width=\"1\""
 		        << " height=\"1\""
-		        << " style=\""
-		        << "fill:rgb(" << colors[it->color].c[0] << ","
-		                       << colors[it->color].c[1] << ","
-		                       << colors[it->color].c[2] << ");"
-		        << "stroke:black;"
-		        << "stroke-width:.1"
-		        << "\"/>" << endl;
+		        << " class=\"" << "nucBox" << " " <<  it->color << "\""
+		        << "/>" << endl;
 	}
 
 	// Element Symbols
