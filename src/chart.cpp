@@ -149,6 +149,7 @@ int main() {
 	// Styling
 	svgfile << "<style>" << endl;
 	svgfile << ".nucBox{stroke:black;stroke-width:.1;}" << endl;
+	svgfile << ".elName{text-anchor:end;}" << endl;
 	for (map<string,color>::iterator it=colors.begin(); it!=colors.end(); ++it) {
 		svgfile << "." << it->first << " {"
 		        << "fill:rgb(" << it->second.c[0] << ","
@@ -187,8 +188,8 @@ int main() {
 			svgfile << "<text"
 			        << " x=\"" << x-.25 << "\""
 			        << " y=\"" << maxZ-(it->first)+.75 << "\""
-			        << " text-anchor=\"end\""
 			        << " font-size=\".9\""
+			        << " class=\"" << "elName" << "\""
 			        << ">"
 			        << it->second
 			        << "</text>" << endl;
