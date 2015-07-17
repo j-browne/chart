@@ -7,10 +7,13 @@ COMPILE = $(CC) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS)
 
 TARGET = chart
-OBJS = chart.o  # List of object dependencies
+OBJS = chart.o cmdline.o # List of object dependencies
 
 $(TARGET): $(OBJS)
 	$(LINK) -o $@ $^ $(LIBS)
+
+cmdline.c: chart_opts.ggo
+	gengetopt < chart_opts.ggo
 
 %.o:%.cpp
 	$(COMPILE) -c $<

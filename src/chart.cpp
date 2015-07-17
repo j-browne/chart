@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <algorithm>
+#include "cmdline.h"
 
 using namespace std;
 
@@ -21,8 +22,8 @@ public:
 	string color;
 };
 
-//int main(int argc, char *argv[]) {
-int main() {
+int main(int argc, char *argv[]) {
+	gengetopt_args_info args_info;
 	map<string,color> colors;
 	vector<nucleus> nuclei;
 	vector<int> magic;
@@ -32,6 +33,13 @@ int main() {
 	int maxZ=0;
 	int maxN=0;
 	const int scale = 10;
+
+	/*
+	 * Parse Command Line Arguments
+	 */
+	if (cmdline_parser (argc, argv, &args_info) != 0) {
+		exit(1);
+	}
 
 	/*
 	 * Load in the colors
@@ -138,7 +146,7 @@ int main() {
 	/*
 	 * Output the SVG
 	 */
-	ofstream svgfile("out.svg");
+	ofstream svgfile(args_info.output_arg);
 	// Header
 	svgfile << "<svg xmlns=\"http://www.w3.org/2000/svg\""
 	        << " xmlns:xlink=\"http://www.w3.org/1999/xlink\""
