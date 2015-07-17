@@ -2,4 +2,8 @@ package "chart"
 version "0.1"
 purpose "Create an SVG of the chart of the nuclides"
 
-option "output" o "The SVG output file" string default="out.svg" optional
+option "output"   o "The SVG output file"                               string default="out.svg"       optional
+option "nuclei"   n "The data file containing nuclide information"      string default="data/nuclei"   optional
+option "magic"    m "The data file containing magic number information" string default="data/magic"    optional
+option "colors"   c "The data file containing color information"        string default="data/colors"   optional
+option "elements" e "The data file containing element information"      string default="data/elements" optional
