@@ -22,30 +22,7 @@ public:
 	string color;
 };
 
-int main(int argc, char *argv[]) {
-	gengetopt_args_info args_info;
-	map<string,color> colors;
-	vector<nucleus> nuclei;
-	vector<int> magic;
-	map<int,string> elements;
-	map<int,pair<int,int>> zLimits;
-	map<int,pair<int,int>> nLimits;
-	int maxZ=0;
-	int maxN=0;
-	const int scale = 10;
-
-	/*
-	 * Parse Command Line Arguments
-	 */
-	if (cmdline_parser (argc, argv, &args_info) != 0) {
-		exit(1);
-	}
-
-	/*
-	 * Load in the colors
-	 * The file is formatted as:
-	 * name	r	g	b
-	 */
+void get_colors(gengetopt_args_info& args_info, map<string,color>& colors) {
 	ifstream colfile(args_info.colors_arg);
 	string str;
 	while(getline(colfile, str), colfile.good()) {
@@ -58,15 +35,11 @@ int main(int argc, char *argv[]) {
 		colors.insert(pair<string,color>(n,c));
 	}
 	colfile.close();
+}
 
-	/*
-	 * Load in the nuclei
-	 * The file is formatted as:
-	 * name	z	n	color
-	 *
-	 * The color is associated with a color name from the color file
-	 */
+void get_nuclei(gengetopt_args_info& args_info, vector<nucleus>& nuclei) {
 	ifstream nucfile(args_info.nuclei_arg);
+	string str;
 	while(getline(nucfile, str), nucfile.good()) {
 		stringstream ss(str);
 		nucleus n;
@@ -76,16 +49,14 @@ int main(int argc, char *argv[]) {
 		nuclei.push_back(n);
 	}
 	nucfile.close();
+}
 
-	/*
-	 * Load in the element names
-	 * The file is formatted as:
-	 * z	name
-	 */
+void get_elements(gengetopt_args_info& args_info, map<int,string>& elements) {
 	ifstream elemfile(args_info.elements_arg);
+	string str;
 	while(getline(elemfile, str), elemfile.good()) {
 		stringstream ss(str);
-		 int z;
+		int z;
 		string n;
 
 		ss >> z >> n;
@@ -93,13 +64,11 @@ int main(int argc, char *argv[]) {
 		elements.insert(pair<int,string>(z,n));
 	}
 	elemfile.close();
+}
 
-	/*
-	 * Load in the magic numbers
-	 * The file is formatted as:
-	 * n
-	 */
+void get_magic(gengetopt_args_info& args_info, vector<int>& magic) {
 	ifstream magfile(args_info.magic_arg);
+	string str;
 	while(getline(magfile, str), magfile.good()) {
 		stringstream ss(str);
 		int n;
@@ -109,6 +78,14 @@ int main(int argc, char *argv[]) {
 		magic.push_back(n);
 	}
 	magfile.close();
+}
+
+void output_svg(gengetopt_args_info& args_info, vector<nucleus>& nuclei, map<string,color>& colors, map<int,string>& elements, vector<int>& magic) {
+	map<int,pair<int,int>> zLimits;
+	map<int,pair<int,int>> nLimits;
+	int maxZ=0;
+	int maxN=0;
+	const int scale = 10;
 
 	/*
 	 * Determine the limits of the chart
@@ -232,4 +209,54 @@ int main(int argc, char *argv[]) {
 	svgfile << "</g>" << endl;
 	svgfile << "</svg>" << endl;
 	svgfile.close();
+}
+
+int main(int argc, char *argv[]) {
+	gengetopt_args_info args_info;
+	map<string,color> colors;
+	vector<nucleus> nuclei;
+	vector<int> magic;
+	map<int,string> elements;
+
+	/*
+	 * Parse Command Line Arguments
+	 */
+	if (cmdline_parser (argc, argv, &args_info) != 0) {
+		exit(1);
+	}
+
+	/*
+	 * Load in the colors
+	 * The file is formatted as:
+	 * name	r	g	b
+	 */
+	get_colors(args_info, colors);
+
+	/*
+	 * Load in the nuclei
+	 * The file is formatted as:
+	 * name	z	n	color
+	 *
+	 * The color is associated with a color name from the color file
+	 */
+	get_nuclei(args_info, nuclei);
+
+	/*
+	 * Load in the element names
+	 * The file is formatted as:
+	 * z	name
+	 */
+	get_elements(args_info, elements);
+
+	/*
+	 * Load in the magic numbers
+	 * The file is formatted as:
+	 * n
+	 */
+	get_magic(args_info, magic);
+
+	/*
+	 * Output the SVG
+	 */
+	output_svg(args_info, nuclei, colors, elements, magic);
 }
