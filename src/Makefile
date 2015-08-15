@@ -15,6 +15,9 @@ $(TARGET): $(OBJS)
 cmdline.c: chart_opts.ggo
 	gengetopt < chart_opts.ggo
 
+cmdline.o: cmdline.c
+	clang -c cmdline.c
+
 %.o:%.cpp
 	$(COMPILE) -c $<
 
