@@ -1,7 +1,7 @@
 # Chart
 Create an SVG of the chart of the nuclides
 
-![An Example Image](example.svg)
+![An Example Image](example.svg 'An Example Image')
 
 ## Data Files
 
