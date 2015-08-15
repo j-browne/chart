@@ -8,13 +8,13 @@ Create an SVG of the chart of the nuclides
 ### Nuclide File
 This file contains a list of nuclei and their properties.
 ```
-name	Z	N	color label
+name	Z	N	color_label
 ```
 
 ### Color File
 This file contains a list of colors and their definitions.
 ```
-color label	R	G	B
+color_label	R	G	B
 ```
 
 ### Element File
@@ -26,5 +26,5 @@ Z	name
 ### Magic Number File
 This file contains a list of magic numbers.
 ```
-magic number
+magic_number
 ```
