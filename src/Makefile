@@ -7,16 +7,19 @@ COMPILE = $(CC) $(CFLAGS)
 LINK = $(CC) $(LDFLAGS)
 
 TARGET = chart
-OBJS = chart.o cmdline.o # List of object dependencies
+OBJS = cmdline.o chart.o # List of object dependencies
 
 $(TARGET): $(OBJS)
 	$(LINK) -o $@ $^ $(LIBS)
 
-cmdline.c: chart_opts.ggo
+cmdline.c cmdline.h: chart_opts.ggo
 	gengetopt < chart_opts.ggo
 
-cmdline.o: cmdline.c
+cmdline.o: cmdline.c cmdline.h
 	clang -c cmdline.c
+
+chart.o: chart.cpp cmdline.h
+	$(COMPILE) -c chart.cpp
 
 %.o:%.cpp
 	$(COMPILE) -c $<
